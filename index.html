@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Get Private Key</title>
+    <link href="/assets/lib/bootstrap/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container my-5">
+        <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto form my-5 d-block">
+            <h2 class="text-center mb-4">Get Private Key GETH Account</h2>
+            <form id="privateKeyForm">
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" required>
+                </div>
+                <div class="mb-3">
+                    <label for="keystore" class="form-label">KeyStore (JSON)</label>
+                    <textarea class="form-control" id="keystore" rows="8" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Get Private Key</button>
+            </form>
+            <div id="alertMessage" class="mt-3"></div>
+            <!-- test btn for copy paste  -->
+
+
+        </div>
+    </div>
+
+    <style>
+        #copyFeedback {
+            display: none;
+        }
+    </style>
+
+    <script src="/assets/lib/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="/assets/lib/clipboard.js/clipboard.min.js"></script>
+    <script src="/assets/lib/keythereum/keythereum.min.js" type="text/javascript"></script>
+
+    <script>
+        document.getElementById('privateKeyForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent the default form submission
+            const password = document.getElementById('password').value;
+            const keystore = document.getElementById('keystore').value;
+            let keyStoreObj;
+            try {
+                keyStoreObj = JSON.parse(keystore);
+            } catch (error) {
+                console.error("Error parsing KeyStore JSON:", error.message);
+                displayErrorAlert(error.message);
+                return;
+            }
+
+            try {
+                const privateKey = generatePrivateKey(password, keyStoreObj);
+                displaySuccessAlert(privateKey);
+            } catch (error) {
+                console.error("Error generating private key:", error.message);
+                displayErrorAlert(error.message);
+            }
+        });
+
+        function generatePrivateKey(password, keyStore) {
+            privkey = keythereum.recover(password, keyStore);
+            return privkey.toString('hex');
+        }
+
+        function displaySuccessAlert(privateKey) {
+            const alertMessage = document.getElementById('alertMessage');
+            const censoredPrivateKey = privateKey.slice(0, 10) + "..." + privateKey.slice(-10);
+            alertMessage.innerHTML = `
+                <div class="alert alert-success d-flex justify-content-between" role="alert">
+                    <div id="private-key-to-copy" class="my-auto">Your private key: ${censoredPrivateKey}</div>
+                    <div id="copyFeedback" class="my-auto">Copied!</div>
+                    <button id="copyButton" class="btn" data-clipboard-text="${privateKey}">
+                        <img src="/assets/icon/copy.svg" alt="Copy to clipboard" style="width: 20px;">
+                    </button>
+                </div>`;
+
+            const copyButton = document.getElementById('copyButton');
+            const copyFeedback = document.getElementById('copyFeedback');
+
+            // Manually initialize ClipboardJS for the newly added copy button
+            const clipboard = new ClipboardJS(copyButton);
+
+            // Update tooltip text when copying is successful
+            clipboard.on('success', function (e) {
+                e.clearSelection();
+                copyButton.style.display = 'none'; // Hide the copy button
+                copyFeedback.style.display = 'inline-block'; // Display the copy feedback message
+
+                // Hide the copy feedback message after 2 seconds
+                setTimeout(function () {
+                    copyFeedback.style.display = 'none'; // Hide the copy feedback message
+                    copyButton.style.display = 'inline-block'; // Show the copy button again
+                }, 2000); // Change the duration as needed (in milliseconds)
+            });
+        }
+
+
+
+        function displayErrorAlert(errorMessage) {
+            const alertMessage = document.getElementById('alertMessage');
+            alertMessage.innerHTML = `
+                <div class="alert alert-danger" role="alert">
+                    ${errorMessage}
+                </div>`;
+        }
+    </script>
+</body>
+
+</html>
