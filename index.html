@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Get Private Key</title>
     <link href="/assets/lib/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/css/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -15,32 +16,84 @@
             <form id="privateKeyForm">
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" required>
+                    <input type="password" class="form-control" id="password" required
+                        placeholder="Input your password...">
                 </div>
                 <div class="mb-3">
                     <label for="keystore" class="form-label">KeyStore (JSON)</label>
-                    <textarea class="form-control" id="keystore" rows="8" required></textarea>
+                    <textarea class="form-control" id="keystore" rows="10" required></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Get Private Key</button>
             </form>
             <div id="alertMessage" class="mt-3"></div>
             <!-- test btn for copy paste  -->
-
-
         </div>
     </div>
 
-    <style>
-        #copyFeedback {
-            display: none;
-        }
-    </style>
+    <div class="footer"> <!-- Memindahkan footer ke luar container -->
+        <div class="container">
+            <div
+                class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto form my-5 d-block mb-3 d-flex justify-content-between">
+                <div class="">
+                    <p class="text-center my-auto">Developed by <a href="https://www.instagram.com/ferdyhape"
+                            target="_blank" class="text-decoration-none">ferdyhape</a></p>
+                </div>
+                <div class="d-flex justify-content-between gap-2">
+                    <a href="https://github.com/ferdyhape" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40" height="40"
+                            viewBox="0 0 72 72">
+                            <path
+                                d="M36,12c13.255,0,24,10.745,24,24c0,10.656-6.948,19.685-16.559,22.818c0.003-0.009,0.007-0.022,0.007-0.022	s-1.62-0.759-1.586-2.114c0.038-1.491,0-4.971,0-6.248c0-2.193-1.388-3.747-1.388-3.747s10.884,0.122,10.884-11.491	c0-4.481-2.342-6.812-2.342-6.812s1.23-4.784-0.426-6.812c-1.856-0.2-5.18,1.774-6.6,2.697c0,0-2.25-0.922-5.991-0.922	c-3.742,0-5.991,0.922-5.991,0.922c-1.419-0.922-4.744-2.897-6.6-2.697c-1.656,2.029-0.426,6.812-0.426,6.812	s-2.342,2.332-2.342,6.812c0,11.613,10.884,11.491,10.884,11.491s-1.097,1.239-1.336,3.061c-0.76,0.258-1.877,0.576-2.78,0.576	c-2.362,0-4.159-2.296-4.817-3.358c-0.649-1.048-1.98-1.927-3.221-1.927c-0.817,0-1.216,0.409-1.216,0.876s1.146,0.793,1.902,1.659	c1.594,1.826,1.565,5.933,7.245,5.933c0.617,0,1.876-0.152,2.823-0.279c-0.006,1.293-0.007,2.657,0.013,3.454	c0.034,1.355-1.586,2.114-1.586,2.114s0.004,0.013,0.007,0.022C18.948,55.685,12,46.656,12,36C12,22.745,22.745,12,36,12z">
+                            </path>
+                        </svg>
+                    </a>
+                    <a href="https://www.linkedin.com/in/ferdy-hahan-pradana/" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40" height="40"
+                            viewBox="0 0 48 48">
+                            <path fill="#0288D1"
+                                d="M42,37c0,2.762-2.238,5-5,5H11c-2.761,0-5-2.238-5-5V11c0-2.762,2.239-5,5-5h26c2.762,0,5,2.238,5,5V37z">
+                            </path>
+                            <path fill="#FFF"
+                                d="M12 19H17V36H12zM14.485 17h-.028C12.965 17 12 15.888 12 14.499 12 13.08 12.995 12 14.514 12c1.521 0 2.458 1.08 2.486 2.499C17 15.887 16.035 17 14.485 17zM36 36h-5v-9.099c0-2.198-1.225-3.698-3.192-3.698-1.501 0-2.313 1.012-2.707 1.99C24.957 25.543 25 26.511 25 27v9h-5V19h5v2.616C25.721 20.5 26.85 19 29.738 19c3.578 0 6.261 2.25 6.261 7.274L36 36 36 36z">
+                            </path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="/assets/lib/bootstrap/bootstrap.bundle.min.js"></script>
     <script src="/assets/lib/clipboard.js/clipboard.min.js"></script>
     <script src="/assets/lib/keythereum/keythereum.min.js" type="text/javascript"></script>
 
     <script>
+        let exampleKeystore = {
+            "address": "5b5cd226194d0ede2652102d52fc0a9ed0f38c0d",
+            "crypto": {
+                "cipher": "aes-128-ctr",
+                "ciphertext": "4c2090a0cc9518ed751a66980b260732e25c329aad80774576e4719551086998",
+                "cipherparams": {
+                    "iv": "e76c2430f28921ce02e87ee4d5814007"
+                },
+                "kdf": "scrypt",
+                "kdfparams": {
+                    "dklen": 32,
+                    "n": 262144,
+                    "p": 1,
+                    "r": 8,
+                    "salt": "108d85b44d73346e7d2c472c8a3fb52908a198853a1cf4302f382eb1e5693c39"
+                },
+                "mac": "de985c35ebd22a2e3577bd3c439b855cc8d6490e3e3e4a84615fd95f5603890b"
+            },
+            "id": "ead788d2-0bc5-4386-a250-13cbd8a727e1",
+            "version": 3
+        };
+
+        // Fill the textarea with an example KeyStore JSON with text("example:") on one line and then move to a new line
+        document.getElementById('keystore').placeholder = "Example:\n" + JSON.stringify(exampleKeystore, null, 4);
+
+
         document.getElementById('privateKeyForm').addEventListener('submit', function (event) {
             event.preventDefault(); // Prevent the default form submission
             const password = document.getElementById('password').value;
